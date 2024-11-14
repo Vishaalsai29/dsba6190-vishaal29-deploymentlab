@@ -42,3 +42,13 @@ resource "azurerm_storage_account" "storage" {
 
   tags = local.tags
 }
+
+// Virtual Network Within Resource Group
+
+# Create a virtual network within the resource group
+resource "azurerm_virtual_network" "example" {
+  name                = "rg-dsba6190-vish29-dev-eastus-877"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  address_space       = ["10.0.0.0/16"]
+}
