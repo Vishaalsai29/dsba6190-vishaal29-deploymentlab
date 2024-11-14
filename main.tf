@@ -40,6 +40,12 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = ["100.0.0.1"]
+    virtual_network_subnet_ids = [azurerm_subnet.snet.id]
+  }
+
   tags = local.tags
 }
 
@@ -51,6 +57,14 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "snet" {
+  name                 = "snet-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
 }
 
 //SQL SERVER AND DATABASE
