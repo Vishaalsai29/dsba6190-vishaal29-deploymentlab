@@ -52,3 +52,33 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   address_space       = ["10.0.0.0/16"]
 }
+
+//SQL SERVER AND DATABASE
+
+resource "azurerm_mssql_server" "sser" {
+  name                         = "sser-sqlserver"
+  resource_group_name          = azurerm_resource_group.sser.name
+  location                     = azurerm_resource_group.sser.location
+  version                      = "12.0"
+  administrator_login          = "4dm1n157r470r"
+  administrator_login_password = "4-v3ry-53cr37-p455w0rd"
+}
+
+resource "azurerm_mssql_database" "sdb" {
+  name         = "example-db"
+  server_id    = azurerm_mssql_server.sdb.id
+  collation    = "SQL_Latin1_General_CP1_CI_AS"
+  license_type = "LicenseIncluded"
+  max_size_gb  = 2
+  sku_name     = "S0"
+  enclave_type = "VBS"
+
+  tags = {
+    foo = "bar"
+  }
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
