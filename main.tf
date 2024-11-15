@@ -78,9 +78,9 @@ resource "azurerm_mssql_server" "sser" {
 }
 
 resource "azurerm_mssql_virtual_network_rule" "sql_vnet_rule" {
-  name                           = "vnet-rule-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
-  server_id                      = azurerm_mssql_server.sser.id
-  subnet_id                      = azurerm_subnet.snet.id
+  name                                 = "vnet-rule-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
+  server_id                            = azurerm_mssql_server.sser.id
+  subnet_id                            = azurerm_subnet.snet.id
   ignore_missing_vnet_service_endpoint = false
 }
 
