@@ -75,12 +75,14 @@ resource "azurerm_mssql_server" "sser" {
   version                      = "12.0"
   administrator_login          = "4dm1n157r470r"
   administrator_login_password = "4-v3ry-53cr37-p455w0rd"
+}
 
-  network_rules {
-    default_action             = "Deny"
-    ip_rules                   = ["100.0.0.1"]
-    virtual_network_subnet_ids = [azurerm_subnet.example.id]
-  }
+resource "azurerm_mssql_virtual_network_rule" "snr" {
+  name                      = "snr-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
+  resource_group_name       = azurerm_resource_group.rg.name
+  server_name               = azurerm_mssql_server.sser.name
+  subnet_id                 = azurerm_subnet.snet.id
+  ignore_missing_vnet_service_endpoint = false
 }
 
 resource "azurerm_mssql_database" "sdb" {
