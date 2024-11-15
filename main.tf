@@ -97,9 +97,8 @@ resource "azurerm_mssql_database" "sdb" {
 }
 
 resource "azurerm_mssql_virtual_network_rule" "snr" {
-  name                      = "snr-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
-  resource_group_name       = azurerm_resource_group.rg.name
-  server_name               = azurerm_mssql_server.sser.name
-  subnet_id                 = azurerm_subnet.snet.id
+  name                           = "snr-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
+  server_id                      = azurerm_mssql_server.sser.id
+  subnet_id                      = azurerm_subnet.snet.id
   ignore_missing_vnet_service_endpoint = false
 }
