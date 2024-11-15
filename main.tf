@@ -95,9 +95,3 @@ resource "azurerm_mssql_database" "sdb" {
     prevent_destroy = true
   }
 }
-
-resource "azurerm_mssql_virtual_network_rule" "snr" {
-  name         = "snr-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
-  server_id    = azurerm_mssql_server.sser.id
-  subnet_id    = azurerm_subnet.snet.id
-}
