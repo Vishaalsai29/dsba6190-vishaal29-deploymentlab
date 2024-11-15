@@ -30,6 +30,23 @@ resource "azurerm_resource_group" "rg" {
   tags = local.tags
 }
 
+// Virtual Network Within Resource Group
+
+# Create a virtual network within the resource group
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet-dsba6190-vish29-dev-eastus-877"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "snet" {
+  name                 = "snet-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
+}
 
 // Storage Account
 
@@ -49,24 +66,6 @@ resource "azurerm_storage_account" "storage" {
   tags = local.tags
 }
 
-// Virtual Network Within Resource Group
-
-# Create a virtual network within the resource group
-resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-dsba6190-vish29-dev-eastus-877"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  address_space       = ["10.0.0.0/16"]
-}
-
-resource "azurerm_subnet" "snet" {
-  name                 = "snet-${var.class_name}${var.student_name}${var.environment}${random_integer.deployment_id_suffix.result}"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.2.0/24"]
-  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
-}
-
 //SQL SERVER AND DATABASE
 
 resource "azurerm_mssql_server" "sser" {
@@ -84,7 +83,7 @@ resource "azurerm_mssql_database" "sdb" {
   collation    = "SQL_Latin1_General_CP1_CI_AS"
   license_type = "LicenseIncluded"
   max_size_gb  = 2
-  sku_name     = "S0"
+  sku_name     = "Standard"
   enclave_type = "VBS"
 
   tags = {
