@@ -75,6 +75,12 @@ resource "azurerm_mssql_server" "sser" {
   version                      = "12.0"
   administrator_login          = "4dm1n157r470r"
   administrator_login_password = "4-v3ry-53cr37-p455w0rd"
+
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = ["100.0.0.1"]
+    virtual_network_subnet_ids = [azurerm_subnet.snet.id]
+  }
 }
 
 resource "azurerm_mssql_database" "sdb" {
